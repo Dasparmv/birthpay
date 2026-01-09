@@ -27,6 +27,12 @@ export default function Admin() {
   const [token, setTok] = useState<string | null>(getToken());
   const [loginForm, setLoginForm] = useState({ username: "admin", password: "" });
 
+  // Form de creación de evento
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [newEvent, setNewEvent] = useState<{ restaurant: string; event_date: string; order_deadline: string }>(
+    { restaurant: "", event_date: today, order_deadline: "" }
+  );
+
   const [events, setEvents] = useState<EventRow[]>([]);
   const [active, setActive] = useState<EventRow | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -109,6 +115,7 @@ export default function Admin() {
     setEvents([]);
     setOrders([]);
     setActive(null);
+    setNewEvent({ restaurant: "", event_date: today, order_deadline: "" });
   }
 
   async function createEvent() {
