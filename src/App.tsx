@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
+import ollitaLogo from "./assets/ollita-logo.jpg";
 
 export default function App() {
   const loc = useLocation();
@@ -9,9 +10,13 @@ export default function App() {
     <div className="container">
       <div className="header">
         <div className="brand">
-          <div className="logo" />
+          <img
+            src={ollitaLogo}
+            alt="OllitaComun"
+            className="brandLogo"
+          />
           <div>
-            <p className="h1">BirthPay</p>
+            <p className="h1">OllitaComun</p>
             <p className="sub">Pedidos + reparto automático + control de pagos</p>
           </div>
         </div>

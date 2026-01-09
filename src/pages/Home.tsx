@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "../supabase";
 import type { EventRow, OrderRow, PaymentMethod } from "../types";
 import { computeTotals, round2 } from "../calc";
+import ollitaLogo from "../assets/ollita-logo.jpg";
 
 function money(n: number) {
   return n.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -133,6 +134,14 @@ export default function Home() {
 
   return (
     <div className="grid" style={{ gap: 14 }}>
+      <div className="card heroCard">
+        <img src={ollitaLogo} alt="OllitaComun" className="heroLogo" />
+        <div>
+          <h1 className="heroTitle">OllitaComun</h1>
+          <p className="heroSubtitle">Organiza almuerzos, reparte costos y controla pagos en un solo lugar.</p>
+        </div>
+      </div>
+
       <div className="card">
         {loading ? (
           <div className="small">Cargando…</div>
