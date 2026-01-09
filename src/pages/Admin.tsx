@@ -33,7 +33,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
-  \1  const [newLetter, setNewLetter] = useState<File | null>(null);
+  const [newLetter, setNewLetter] = useState<File | null>(null);
 
   const [editOrder, setEditOrder] = useState<OrderRow | null>(null);
 
