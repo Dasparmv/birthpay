@@ -25,10 +25,6 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-
-      <div style={{ marginTop: 18 }} className="small">
-        Hecho para gestión interna. Si quieres privacidad (ocultar celular/observación en la lista pública), te lo ajusto en 2 minutos.
-      </div>
     </div>
   );
 }

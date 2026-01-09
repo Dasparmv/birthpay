@@ -61,6 +61,13 @@ export const handler: Handler = async (event) => {
 
     return json(405, { error: "Method not allowed" });
   } catch (e: any) {
-    return json(401, { error: e.message || "Unauthorized" });
+    const msg = e?.message || "Error";
+    if (msg.includes("Missing SUPABASE_URL") || msg.includes("SUPABASE_SERVICE_ROLE_KEY")) {
+      return json(500, { error: msg });
+    }
+    if (msg.includes("ADMIN_JWT_SECRET")) {
+      return json(500, { error: msg });
+    }
+    return json(401, { error: msg || "Unauthorized" });
   }
 };

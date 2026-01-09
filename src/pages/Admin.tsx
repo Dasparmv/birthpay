@@ -248,9 +248,6 @@ export default function Admin() {
             <div className="row" style={{ gridColumn: "1 / -1" }}>
               <button className="btn primary" type="submit">Ingresar</button>
             </div>
-            <div className="small" style={{ gridColumn: "1 / -1" }}>
-              Tip: la credencial se valida en el servidor (Netlify Functions), no queda expuesta en el frontend.
-            </div>
           </form>
         ) : (
           <>
