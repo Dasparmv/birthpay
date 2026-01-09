@@ -138,7 +138,7 @@ export default function Home() {
         <img src={ollitaLogo} alt="OllitaComun" className="heroLogo" />
         <div>
           <h1 className="heroTitle">OllitaComun</h1>
-          <p className="heroSubtitle">Organiza almuerzos, reparte costos y controla pagos en un solo lugar.</p>
+          <p className="heroSubtitle">Organizador de almuerzos.</p>
         </div>
       </div>
 
@@ -176,7 +176,7 @@ export default function Home() {
               <form onSubmit={submit} className="grid two">
                 <div>
                   <label>Nombre completo</label>
-                  <input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Ej: Rafael Herrera" />
+                  <input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Ej: Daniel Solis" />
                 </div>
                 <div>
                   <label>Celular</label>
