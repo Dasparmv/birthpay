@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import * as XLSX from "xlsx";
 import { supabase } from "../supabase";
 import type { EventRow, OrderRow, OrderCondition, PaymentMethod } from "../types";
 import { computeTotals, round2 } from "../calc";
@@ -13,6 +14,7 @@ import {
   adminUpdateOrder,
   adminVoidOrder,
   adminTogglePaid,
+  adminUploadLetter,
   clearToken,
   getToken,
 } from "../apiAdmin";
@@ -31,11 +33,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
-  const [newEvent, setNewEvent] = useState({
-    restaurant: "",
-    event_date: new Date().toISOString().slice(0, 10),
-    order_deadline: "",
-  });
+  \1  const [newLetter, setNewLetter] = useState<File | null>(null);
 
   const [editOrder, setEditOrder] = useState<OrderRow | null>(null);
 
@@ -125,7 +123,11 @@ export default function Admin() {
         setMsg({ type: "err", text: "Ingresa el nombre del restaurante." });
         return;
       }
-      await adminCreateEvent(payload);
+      const created = await adminCreateEvent(payload);
+      if (newLetter) {
+        await adminUploadLetter(created.event.id, newLetter);
+        setNewLetter(null);
+      }
       setNewEvent({ restaurant: "", event_date: payload.event_date, order_deadline: "" });
       await refreshAll();
       setMsg({ type: "ok", text: "Evento creado ✅" });
@@ -220,6 +222,34 @@ export default function Admin() {
 
   const canShow = token != null;
 
+
+  function exportExcel() {
+    if (!active || !computed) return;
+
+    const rows = computed.computed.map((o) => ({
+      Nombre: o.full_name,
+      Celular: o.phone,
+      Condición: o.condition === "NA" ? "N.A" : o.condition === "CUMPLEANERO" ? "Cumpleañero" : "Practicante",
+      Pedido: o.food_desc,
+      "Monto plato": o.food_amount ?? "",
+      Bebida: o.drink_desc ?? "",
+      "Monto bebida": o.drink_amount ?? "",
+      "Cuota N.A": o.condition === "NA" ? computed.quota : 0,
+      "Total final": o.finalTotal,
+      "Medio pago": o.pay_method,
+      Pagado: o.paid ? "SI" : "NO",
+      Observación: o.notes ?? "",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Pedidos");
+
+    const safeRestaurant = (active.restaurant || "evento").replace(/[^a-z0-9-_ ]/gi, "").trim().replace(/\s+/g, "_");
+    const filename = `OllitaComun_${safeRestaurant}_${active.event_date}.xlsx`;
+    XLSX.writeFile(wb, filename);
+  }
+
   return (
     <div className="grid" style={{ gap: 14 }}>
       <div className="card">
@@ -269,6 +299,11 @@ export default function Admin() {
                       <label>Límite de pedido (opcional)</label>
                       <input type="datetime-local" value={newEvent.order_deadline} onChange={(e) => setNewEvent({ ...newEvent, order_deadline: e.target.value })} />
                     </div>
+                  </div>
+                  <div>
+                    <label>Carta del restaurante (opcional)</label>
+                    <input type="file" accept=".pdf,image/*" onChange={(e) => setNewLetter(e.target.files?.[0] ?? null)} />
+                    <div className="small">Los usuarios podrán descargarla desde el formulario.</div>
                   </div>
                   <div className="row">
                     <button className="btn primary" type="button" onClick={createEvent}>Crear</button>
@@ -379,9 +414,12 @@ export default function Admin() {
                 </div>
 
                 <div className="card">
-                  <div className="row" style={{ justifyContent: "space-between" }}>
+                  <div className="row" style={{ justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                     <h3 style={{ margin: 0 }}>Pedidos</h3>
-                    <button className="btn" onClick={refreshAll}>Actualizar</button>
+                    <div className="row" style={{ gap: 10, flexWrap: "wrap" }}>
+                      <button className="btn btnGhost" onClick={exportExcel} disabled={!computed}>Exportar a Excel</button>
+                      <button className="btn" onClick={refreshAll}>Actualizar</button>
+                    </div>
                   </div>
                   <div className="hr" />
 

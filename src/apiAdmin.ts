@@ -1,6 +1,6 @@
 import type { EventRow, OrderRow } from "./types";
 
-const TOKEN_KEY = "birthpay_admin_token";
+const TOKEN_KEY = "ollitacomun_admin_token";
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -89,4 +89,23 @@ export async function adminTogglePaid(id: string, paid: boolean) {
     method: "PATCH",
     body: JSON.stringify({ id, action: "paid", paid }),
   });
+}
+
+
+export async function adminUploadLetter(eventId: string, file: File) {
+  const token = getToken();
+  if (!token) throw new Error("No autenticado");
+  const form = new FormData();
+  form.append("event_id", eventId);
+  form.append("file", file);
+
+  const res = await fetch("/.netlify/functions/admin-letter", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Error subiendo carta");
+  return data as { letter_url: string };
 }

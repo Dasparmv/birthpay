@@ -136,3 +136,17 @@ create policy "no public delete"
 on public.orders for delete
 to anon, authenticated
 using (false);
+
+
+-- Storage bucket for event letters (public read)
+-- Nota: si ya existe, no hace nada.
+insert into storage.buckets (id, name, public)
+values ('event-letters', 'event-letters', true)
+on conflict (id) do nothing;
+
+-- Policies for public download (bucket public should be enough, but dejamos política por si tu proyecto la requiere)
+do $$ begin
+  create policy "Public read event letters"
+  on storage.objects for select
+  using (bucket_id = 'event-letters');
+exception when duplicate_object then null; end $$;

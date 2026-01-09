@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
+import List from "./pages/List";
 import ollitaLogo from "./assets/ollita-logo.jpg";
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
+          <Route path="/lista" element={<List />} />
       </Routes>
     </div>
   );

@@ -11,6 +11,7 @@ export interface EventRow {
   shared_tip: number;
   shared_cake: number;
   shared_other: number;
+  letter_url: string | null;
   created_at: string;
   updated_at: string;
 }
